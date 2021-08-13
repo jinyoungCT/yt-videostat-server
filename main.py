@@ -109,12 +109,13 @@ def get3DaysInfo():
     #private_videos_stat을 사용, stat_ttype=THREEDAYS로 필터링
     videoStat = VideoStat.query.first()
 
-    query = "select * from private_videos_stat where stat_type =" +'"THREEDAYS"'
-    #from private_channels join
-    #private_videos join
+    query = '''select * from private_videos_stat 
+            inner join private_videos on private_videos.id=private_videos_stat.video_id
+            inner join private_channels on private_channels.channel_id = private_videos.channel_id
+            where private_videos_stat.stat_type = '''+ '"THREEDAYS"'
+    
     rows = db.session.execute(query)
-    print(rows)
-
+   
     for row in rows:
       print(row)
     return "get3days info"
