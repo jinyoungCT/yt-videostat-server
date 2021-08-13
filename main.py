@@ -99,10 +99,9 @@ def getVideoInfo():
     
     query = "select * from private_videos where title="+'"'+title+'"'+"limit "+str(limit)
     rows = db.session.execute(query)
-
-    videos = Videos.query.all()
-
-    return render_template('video.html', rows= videos)
+    rows = rows.fetchall()
+    print(rows)
+    return render_template('video.html', rows= rows)
 
 @app.route("/get3DaysInfo", methods=['Get'])
 def get3DaysInfo():
@@ -115,10 +114,10 @@ def get3DaysInfo():
             where private_videos_stat.stat_type = '''+ '"THREEDAYS"'
     
     rows = db.session.execute(query)
-   
-    for row in rows:
-      print(row)
-    return "get3days info"
+    rows = rows.fetchall()
+    print(rows)
+    
+    return render_template('threeDays.html', rows= rows)
 
 @app.route("/one")
 def one():
