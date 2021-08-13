@@ -4,6 +4,7 @@ dl-ytVideostatServer-be
 ## Getting Started
 
 ### Prerequisites
+python3 
 
 ### Installing
 pip install flask
