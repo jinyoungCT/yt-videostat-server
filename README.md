@@ -5,6 +5,7 @@ dl-ytVideostatServer-be
 
 ### Prerequisites
 python3 
+gcp api, oauth2 설정
 
 ### Installing
 pip install flask
