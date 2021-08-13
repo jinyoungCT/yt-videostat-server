@@ -77,10 +77,16 @@ def test():
     if ret ==[]:
         return "404 error vid not found."
 
+<<<<<<< HEAD
     print(ret)
     r = str(ret).split(",")
     returnStrings = str(r[3:])
     
+=======
+    r = str(ret).split(",")
+    returnStrings = str(r[3:])
+
+>>>>>>> ceb444362a2835ce8b0189c0ec79e0db13a99271
     return returnStrings
 
 if __name__ == "__main__": 
