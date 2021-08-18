@@ -12,7 +12,7 @@ from googleapiclient.discovery import build
 
 from flask_sqlalchemy import SQLAlchemy
 from model import Videos
-from model import VideoStat
+from model import VideoStat, Channels
 
 app = Flask(__name__)
 
@@ -96,26 +96,21 @@ def getVideoInfo():
     limit = 20
     title = "가지고 싶으면 들어와!!"
     #from private-videos-tables
+    q= db.session.query(Videos).filter(Videos.title==title)[:1]
     
-    query = "select * from private_videos where title="+'"'+title+'"'+"limit "+str(limit)
-    rows = db.session.execute(query)
-    rows = rows.fetchall()
-    print(rows)
-    return render_template('video.html', rows= rows)
+    return render_template('video.html', rows= q)
 
 @app.route("/get3DaysInfo", methods=['Get'])
 def get3DaysInfo():
     #private_videos_stat을 사용, stat_ttype=THREEDAYS로 필터링
     videoStat = VideoStat.query.first()
 
-    query = '''select * from private_videos_stat 
-            inner join private_videos on private_videos.id=private_videos_stat.video_id
-            inner join private_channels on private_channels.channel_id = private_videos.channel_id
-            where private_videos_stat.stat_type = '''+ '"THREEDAYS"'
-    
-    rows = db.session.execute(query)
-    rows = rows.fetchall()
-    print(rows)
+    # query = '''select * from private_videos_stat 
+    #         inner join private_videos on private_videos.id=private_videos_stat.video_id
+    #         inner join private_channels on private_channels.channel_id = private_videos.channel_id
+    #         where private_videos_stat.stat_type = '''+ '"THREEDAYS"'
+    stat_type = "THREEDAYS"
+    rows = db.session.query(VideoStat).outerjoin(Videos, VideoStat.video_id==Videos.id).outerjoin(Channels, Channels.channel_id==Videos.channel_id).filter(VideoStat.stat_type==stat_type)[:20]
     
     return render_template('threeDays.html', rows= rows)
 

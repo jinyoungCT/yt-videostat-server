@@ -3,15 +3,14 @@
 <body>
 <table>
 {% for row in rows %}
-    {{row}}
     <tr>
         <td>{{ row.id }}</td>
-        <td>{{ row.channel_id }}</td>
-        <td>{{ row.title }}</td>
-        <td>{{ row.status }}</td>
-        <td>{{ row.description }}</td>
-        <td>{{ row.thumbnail }}</td>
-        <td>{{ row.published_at }}</td>
+        <td>{{ row.video_id }}</td>
+        <td>{{ row.stat_type }}</td>
+        <td>{{ row.views }}</td>
+        <td>{{ row.views_red }}</td>
+        <td>{{ row.per_viewed }}</td>
+        <td>{{ row.per_viewed_subs }}</td>
     </tr>
 {% endfor %}
 </table>
