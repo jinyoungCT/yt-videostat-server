@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<table>
+{% for row in rows %}
+    {{row}}
+    <tr>
+        <td>{{ row.id }}</td>
+        <td>{{ row.channel_id }}</td>
+        <td>{{ row.title }}</td>
+        <td>{{ row.status }}</td>
+        <td>{{ row.description }}</td>
+        <td>{{ row.thumbnail }}</td>
+        <td>{{ row.published_at }}</td>
+    </tr>
+{% endfor %}
+</table>
+</body>
+</html>

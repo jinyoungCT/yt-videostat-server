@@ -2,7 +2,7 @@ import httplib2
 import os
 import sys
 
-from flask import Flask, redirect
+from flask import Flask, redirect, render_template
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.client import flow_from_clientsecrets
@@ -10,9 +10,19 @@ from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 from googleapiclient.discovery import build
 
+from flask_sqlalchemy import SQLAlchemy
+from model import Videos
+from model import VideoStat
 
 app = Flask(__name__)
 
+#database config
+app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:stzu7734@localhost:3306/dataLake'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+#oauth2 config
 CLIENT_SECRETS_FILE = "client_secret.json"
 YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube"
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -73,21 +83,46 @@ def test():
     video_id = "XP0DigwmNDY"
     response = api_obj.videos().list(part="statistics", id= video_id).execute()
     ret = response["items"]
-
     if ret ==[]:
-        return "404 error vid not found."
-
-<<<<<<< HEAD
+      return "404 error vid not found."
     print(ret)
     r = str(ret).split(",")
     returnStrings = str(r[3:])
-    
-=======
-    r = str(ret).split(",")
-    returnStrings = str(r[3:])
-
->>>>>>> ceb444362a2835ce8b0189c0ec79e0db13a99271
     return returnStrings
+
+
+@app.route("/getVideoInfo", methods=['GET'])
+def getVideoInfo():
+    limit = 20
+    title = "가지고 싶으면 들어와!!"
+    #from private-videos-tables
+    
+    query = "select * from private_videos where title="+'"'+title+'"'+"limit "+str(limit)
+    rows = db.session.execute(query)
+    rows = rows.fetchall()
+    print(rows)
+    return render_template('video.html', rows= rows)
+
+@app.route("/get3DaysInfo", methods=['Get'])
+def get3DaysInfo():
+    #private_videos_stat을 사용, stat_ttype=THREEDAYS로 필터링
+    videoStat = VideoStat.query.first()
+
+    query = '''select * from private_videos_stat 
+            inner join private_videos on private_videos.id=private_videos_stat.video_id
+            inner join private_channels on private_channels.channel_id = private_videos.channel_id
+            where private_videos_stat.stat_type = '''+ '"THREEDAYS"'
+    
+    rows = db.session.execute(query)
+    rows = rows.fetchall()
+    print(rows)
+    
+    return render_template('threeDays.html', rows= rows)
+
+@app.route("/one")
+def one():
+  video = Videos.query.first()
+  return "hi {0}, {1}".format(video.id, video.title)
 
 if __name__ == "__main__": 
     app.run(host='localhost', port='8080', debug=True)
